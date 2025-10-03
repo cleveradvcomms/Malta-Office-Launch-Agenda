@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malta Office Launch – Event Flow</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@700&family=Figtree:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Light Mode Variables (Default) */
+            --bg-color: #f4f7f6;
+            --container-bg-color: #ffffff;
+            --sidebar-bg-color: #ffffff;
+            --text-color: #24282A;
+            --header-color: #231372;
+            --highlight-color: #20E2C8;
+            --secondary-color: #6106AF;
+            --header-bg-color: #ffffff;
+            --box-shadow-color: rgba(0, 0, 0, 0.08);
+            --border-color: #e0e0e0;
+
+            /* !!! EASY EDIT: Adjust the invitation aspect ratio here !!! */
+            /* Formula: (Image Height / Image Width) * 100 */
+            --invitation-aspect-ratio: 141.4%; /* Current value is for A4 paper ratio */
+        }
+
+        body.dark-mode {
+            /* Dark Mode Variables */
+            --bg-color: #1a1c2a;
+            --container-bg-color: #25283b;
+            --sidebar-bg-color: #1f2233;
+            --text-color: #d1d1d1;
+            --header-color: #a7a2ff;
+            --secondary-color: #9d52ff;
+            --header-bg-color: #1f2233;
+            --box-shadow-color: rgba(0, 0, 0, 0.2);
+            --border-color: #3a3f58;
+        }
+        
+        /* General Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Figtree', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        header {
+            background-color: var(--header-bg-color);
+            padding: 1.5em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px var(--box-shadow-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        header svg { height: 70px; width: auto; }
+        .cls-4 { fill: var(--text-color); }
+
+        .page-wrapper {
+            max-width: 1200px;
+            margin: 2em auto;
+            padding: 0 2em;
+            display: flex;
+            gap: 2em;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar-nav {
+            flex: 0 0 220px;
+            background-color: var(--sidebar-bg-color);
+            padding: 1.5em;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px var(--box-shadow-color);
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5em;
+        }
+
+        .sidebar-nav button {
+            font-family: 'Barlow', sans-serif;
+            font-size: 1em;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-align: left;
+            padding: 0.8em 1em;
+            border: none;
+            border-radius: 6px;
+            background-color: transparent;
+            cursor: pointer;
+            color: var(--text-color);
+            width: 100%;
+            transition: background-color 0.3s, color 0.3s;
+            border-left: 4px solid transparent;
+        }
+        
+        .sidebar-nav button:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        body.dark-mode .sidebar-nav button:hover {
+             background-color: rgba(255,255,255,0.05);
+        }
+
+        .sidebar-nav button.active {
+            color: var(--header-color);
+            background-color: var(--bg-color);
+            border-left: 4px solid var(--highlight-color);
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            background-color: var(--container-bg-color);
+            padding: 1.5em 2.5em;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px var(--box-shadow-color);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        h2 { font-size: 1.8em; margin-top: 1.5em; padding-bottom: 0.5em; position: relative; border-bottom: 1px solid var(--border-color); font-family: 'Barlow', sans-serif; font-weight: 700; text-transform: uppercase; color: var(--header-color); transition: color 0.3s; }
+        h3 { font-family: 'Barlow', sans-serif; font-weight: 700; text-transform: uppercase; color: var(--header-color); transition: color 0.3s; }
+        strong { color: var(--header-color); font-weight: 700; }
+        ul { list-style: none; padding-left: 0; }
+        ul li { padding-left: 1.8em; position: relative; margin-bottom: 0.8em; }
+        ul li::before { content: '■'; position: absolute; left: 0; color: var(--highlight-color); font-size: 1.2em; line-height: 1; }
+        ul ul { margin-top: 0.8em; margin-left: 1em; }
+        ul ul li::before { content: '–'; color: var(--secondary-color); }
+
+        /* Invitation Embed Container */
+        .invitation-embed-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 1.5em auto;
+            padding-top: var(--invitation-aspect-ratio); /* Uses the variable from :root */
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px var(--box-shadow-color);
+        }
+
+        .invitation-embed-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Dark Mode Toggle */
+        .theme-switch-wrapper {
+            margin-top: 2em;
+            padding-top: 1em;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.9em;
+        }
+        .theme-switch { display: inline-block; height: 24px; position: relative; width: 48px; }
+        .theme-switch input { display:none; }
+        .slider { background-color: #ccc; bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; border-radius: 24px; }
+        .slider:before { background-color: #fff; bottom: 3px; content: ""; height: 18px; left: 4px; position: absolute; transition: .4s; width: 18px; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--secondary-color); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .page-wrapper { flex-direction: column; }
+            .sidebar-nav { flex: 0 0 auto; flex-direction: row; overflow-x: auto; justify-content: flex-start; gap: 0; }
+            .sidebar-nav button { white-space: nowrap; border-left: none; border-bottom: 4px solid transparent; }
+            .sidebar-nav button.active { border-bottom: 4px solid var(--highlight-color); }
+            .theme-switch-wrapper { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <svg id="Camada_2" data-name="Camada 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 837.7 245.66">
+            <g>
+              <path class="cls-4" d="M452.05,129.69v18.74c0,1.99-1.61,3.6-3.6,3.6h-67.98c-1.99,0-3.6-1.61-3.6-3.6h0V42.63c0-1.99,1.61-3.6,3.6-3.6h20.9c1.99,0,3.6,1.61,3.6,3.6h0v83.46h43.47c1.99,0,3.6,1.61,3.61,3.59h0Z"/>
+              <path class="cls-4" d="M821.22,116.37l-2.89-5.46c17.91-12.4,22.38-36.97,9.99-54.88-7.37-10.65-19.49-17-32.44-17h-41.65c-1.99,0-3.6,1.61-3.6,3.6v105.8c0,1.99,1.61,3.6,3.6,3.6h20.81c2.04,0,3.7-1.66,3.7-3.7v-30.56c0-.77.63-1.4,1.4-1.4h8.8c.52,0,1,.29,1.24.75l.23.43,17.21,32.51c.64,1.22,1.91,1.98,3.29,1.98h23.18c2,0,3.62-1.63,3.62-3.63,0-.59-.15-1.17-.42-1.69l-16.06-30.34ZM805.1,85.93c-2.59,4.22-7.18,6.79-12.13,6.78h-14.24v-28.46h14.9v.02c7.86.37,13.93,7.03,13.56,14.89-.11,2.4-.83,4.73-2.09,6.78h0Z"/>
+              <path class="cls-4" d="M370.4,140.66c.53.99.24,2.22-.67,2.87-26.46,18.91-63.23,12.79-82.14-13.66-18.91-26.46-12.79-63.23,13.66-82.14,20.48-14.64,47.99-14.64,68.47,0,.91.66,1.19,1.88.67,2.88l-10.45,19.73c-.93,1.76-3.11,2.42-4.87,1.49-.2-.1-.38-.23-.55-.36-13.36-10.51-32.71-8.21-43.22,5.15-10.51,13.36-8.21,32.71,5.15,43.22,11.17,8.79,26.91,8.79,38.08,0,1.55-1.24,3.82-.99,5.06.57.14.17.26.36.37.56l10.44,19.73Z"/>
+              <path class="cls-4" d="M487.03,64.97v18.73h37.96c1.99,0,3.6,1.61,3.6,3.6v16.46c0,1.99-1.61,3.6-3.6,3.6h-37.96v18.73h49.15c1.99,0,3.6,1.61,3.6,3.6v18.74c0,1.99-1.61,3.6-3.6,3.6h-73.66c-1.99,0-3.6-1.61-3.6-3.6V42.63c0-1.99,1.61-3.6,3.6-3.6h73.66c1.99,0,3.6,1.61,3.6,3.6v18.65c0,2.04-1.65,3.69-3.69,3.69h-49.06Z"/>
+              <path class="cls-4" d="M691.37,64.97v18.73h37.96c1.99,0,3.6,1.61,3.6,3.6v16.46c0,1.99-1.61,3.6-3.6,3.6h-37.96v18.73h49.15c1.99,0,3.6,1.61,3.6,3.6v18.74c0,1.99-1.61,3.6-3.6,3.6h-73.66c-1.99,0-3.6-1.61-3.6-3.6V42.63c0-1.99,1.61-3.6,3.6-3.6h73.66c1.99,0,3.6,1.61,3.6,3.6v18.65c0,2.04-1.65,3.69-3.69,3.69h-49.06Z"/>
+              <path class="cls-4" d="M656.55,42.1l-42.22,107.61c-.55,1.4-1.9,2.32-3.41,2.32h-18.86c-1.51,0-2.86-.92-3.41-2.32l-42.22-107.61c-.45-1.15.11-2.46,1.27-2.91.26-.1.54-.16.82-.16h24.31c1.54,0,2.92.96,3.45,2.41l25.21,69.57,15.99-44.09c.27-.74-.12-1.55-.85-1.82-.15-.06-.32-.08-.48-.08h-15.82c-1.24,0-2.25-1-2.25-2.25,0-.26.05-.52.13-.77l7.45-20.56c.53-1.45,1.9-2.41,3.44-2.41h45.35c1.24,0,2.25,1.01,2.25,2.25,0,.28-.05.56-.16.82"/>
+              <path class="cls-4" d="M239.71,6.67l-91.78,233.94c-1.2,3.05-4.14,5.05-7.41,5.05h-41c-3.27,0-6.21-2.01-7.41-5.05L.34,6.67C-.64,4.16.59,1.32,3.1.34,3.67.11,4.28,0,4.89,0h52.84c3.35,0,6.34,2.1,7.48,5.25l54.82,151.23,34.75-95.85c.58-1.6-.25-3.37-1.85-3.95-.34-.12-.69-.19-1.05-.18h-34.39c-2.7,0-4.88-2.19-4.88-4.88,0-.57.1-1.13.29-1.66l16.2-44.7c1.14-3.15,4.13-5.25,7.49-5.25h98.59c2.7,0,4.88,2.19,4.88,4.88,0,.61-.11,1.22-.34,1.78"/>
+            </g>
+        </svg>
+    </header>
+
+    <div class="page-wrapper">
+        <aside class="sidebar-nav">
+            <button class="tab-button active" data-tab="tab1">Overview & Agenda</button>
+            <button class="tab-button" data-tab="tab2">Detailed Plan</button>
+            <button class="tab-button" data-tab="tab3">Key Dates</button>
+
+            <div class="theme-switch-wrapper">
+                <span>Dark Mode</span>
+                <label class="theme-switch" for="checkbox">
+                    <input type="checkbox" id="checkbox" />
+                    <div class="slider round"></div>
+                </label>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            <div id="tab1" class="tab-content active">
+                <h2>Pre-Event Tasks</h2>
+                <ul>
+                    <li><strong>Oct 6:</strong> Design team to start artwork.</li>
+                    <li><strong>Oct 6:</strong> Send all internal and external invites. Internal coordination for Clever team invites will be handled by <strong>Joana Patrocinio</strong>.</li>
+                </ul>
+                
+                <div class="invitation-embed-container">
+                    <iframe src="https://drive.google.com/file/d/1NuQAifm95757NB2j4LQWQb6arc3kKidX/preview" allowfullscreen></iframe>
+                </div>
+
+                <h2>Agenda – Malta Office Launch</h2>
+                <h3>Notes:</h3>
+                <ul>
+                    <li>Main building reception open with staff to guide guests.</li>
+                    <li>Bar cannot be in front of or near the stage (Minister’s team request).</li>
+                    <li>Alcohol only after speeches.</li>
+                    <li>Minister’s photos/videos require approval before social media use.</li>
+                    <li>Minister’s team to release press note first; Clever’s release follows.</li>
+                </ul>
+                
+                <h3>Timeline:</h3>
+                <ul>
+                    <li><strong>09:30 AM</strong> – Guest arrival (drinks, canapés, DJ & violin).</li>
+                    <li><strong>09:30 AM</strong> – Minister’s team arrival.</li>
+                    <li><strong>10:30 AM</strong> – Minister arrives. His team will notify us 5 min before; Alberto or Clever reps go down to greet and escort him upstairs.</li>
+                    <li><strong>10:35 AM</strong> – Speeches & official opening:
+                        <ul>
+                            <li>MC announcement (Natasha or Andre Borges).</li>
+                            <li>Alberto – 5 min</li>
+                            <li>Ivan – 5 min</li>
+                            <li>Minister Schembri – 5 min, presses the ‘big red button’; launch graphic (Clever logo reveal) plays on screen.</li>
+                        </ul>
+                    </li>
+                    <li>Background music starts immediately as applause begins; drinks service follows right after.</li>
+                    <li><strong>11:00 AM</strong> – Sax & DJ, networking, brunch, games & activities.</li>
+                    <li><strong>03:00 PM</strong> – Bar closes.</li>
+                </ul>
+            </div>
+            <div id="tab2" class="tab-content">
+                <h2>1. Logistics & Coordination</h2>
+                <ul>
+                    <li><strong>Point persons for each block:</strong>
+                        <ul>
+                            <li>Reception → <strong>242 group</strong></li>
+                            <li>Catering → <strong>242 group</strong></li>
+                            <li>Music → <strong>242 group</strong></li>
+                            <li>AV → <strong>242 group</strong></li>
+                            <li>Security → <strong>(?) to be confirmed</strong></li>
+                        </ul>
+                    </li>
+                    <li><strong>Transport & parking plan:</strong> Confirm VIP access routes, designated parking for the Minister’s car, and supplier access points.</li>
+                    <li><strong>Emergency contact:</strong> (?) Assign one central number/person.</li>
+                </ul>
+                <h2>2. Stage & AV Setup</h2>
+                <ul>
+                    <li><strong>Technical tests (during rehearsal – Nov 13, 4–5:30pm):</strong>
+                        <ul>
+                            <li>Microphones tested + backup available.</li>
+                            <li>Launch graphic (logo reveal) tested on the screen/projector.</li>
+                            <li>Transition music rehearsed to avoid awkward silence after speeches.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Photo & video positioning:</strong> Define capture areas; bar cannot appear in stage photos.</li>
+                    <li><strong>Streaming/Recording:</strong> Confirm whether the event will be livestreamed or only internally recorded.</li>
+                </ul>
+                <h2>3. Ministerial Protocol</h2>
+                 <ul>
+                    <li><strong>Restrictions checklist:</strong>
+                        <ul>
+                            <li>Alcohol served only after speeches (confirm responsibility: ?).</li>
+                            <li>Photos/videos with Minister must be pre-approved by his team.</li>
+                            <li>First press release must come from the Minister’s team; Clever’s release follows after.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Minister liaison:</strong> One Clever representative dedicated solely to communication with the Minister’s team.</li>
+                </ul>
+                <h2>4. Guest Experience</h2>
+                <ul>
+                    <li><strong>Welcome flow:</strong> Reception staff guide guests clearly to the event space (signage + personal guidance).</li>
+                    <li><strong>Timing attention:</strong> Ensure canapés/drinks are ready at arrival and accessible throughout networking.</li>
+                    <li><strong>Side activities:</strong> Games and entertainment after 11:00 (decision needed on structured vs free-flow).</li>
+                </ul>
+                <h2>5. Safety & Contingency</h2>
+                <ul>
+                    <li><strong>Evacuation plan briefed to all staff.</strong></li>
+                    <li><strong>On-site medic/first aid contact available.</strong></li>
+                    <li><strong>Staff informed of fire extinguishers, emergency exits, and first-aid kit locations.</strong></li>
+                </ul>
+                <h2>6. Dismantling & Post-Event</h2>
+                <ul>
+                    <li><strong>Dismantling crew:</strong> Assign leads and confirm timeline (scheduled Nov 14, 4:30–8pm).</li>
+                    <li><strong>Press release follow-up:</strong> Clever’s release goes out after the Minister’s official release.</li>
+                    <li><strong>Debrief meeting:</strong> Schedule an internal post-event review to collect feedback and lessons learned.</li>
+                </ul>
+            </div>
+            <div id="tab3" class="tab-content">
+                <h2>Other Key Dates</h2>
+                <ul>
+                    <li><strong>Thu, Nov 13, 2025 (7:00–7:30am):</strong> Kylie and 242 team arrive for setup.</li>
+                    <li><strong>Thu, Nov 13, 2025 (4:00–5:30pm):</strong> Event rehearsal.</li>
+                    <li><strong>Fri, Nov 14, 2025 (4:30–8:00pm):</strong> Event dismantling.</li>
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.sidebar-nav button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    button.classList.add('active');
+                    document.getElementById(button.dataset.tab).classList.add('active');
+                });
+            });
+
+            const themeToggle = document.getElementById('checkbox');
+            const body = document.body;
+            const applyTheme = () => {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'dark') {
+                    body.classList.add('dark-mode');
+                    themeToggle.checked = true;
+                } else {
+                    body.classList.remove('dark-mode');
+                    themeToggle.checked = false;
+                }
+            };
+
+            themeToggle.addEventListener('change', () => {
+                if (themeToggle.checked) {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+
+            applyTheme();
+        });
+    </script>
+</body>
+</html>
